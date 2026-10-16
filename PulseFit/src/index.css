@@ -1,0 +1,115 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg: 244 246 241;
+  --surface: 255 255 255;
+  --ink: 14 18 24;
+  --muted: 92 102 115;
+  --line: 14 18 24;
+  --glass: rgba(255, 255, 255, 0.72);
+  --glass-border: rgba(14, 18, 24, 0.08);
+  --accent: #4A7600;
+  --grid: rgba(14, 18, 24, 0.07);
+}
+.dark {
+  --bg: 8 10 14;
+  --surface: 17 21 28;
+  --ink: 240 244 236;
+  --muted: 140 150 162;
+  --line: 255 255 255;
+  --glass: rgba(22, 27, 36, 0.55);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --accent: #C6FF3D;
+  --grid: rgba(255, 255, 255, 0.06);
+}
+
+@layer base {
+  html, body { -webkit-tap-highlight-color: transparent; overflow-x: clip; }
+  /* Reserve the scrollbar space so content does not jump sideways when a page becomes scrollable. */
+  html { scrollbar-gutter: stable; }
+  body {
+    @apply bg-bg text-ink font-sans antialiased;
+    min-height: 100dvh;
+    transition: background-color .4s ease, color .4s ease;
+  }
+  h1, h2, h3, h4 { @apply font-display tracking-tight; }
+  ::selection { background: #C6FF3D; color: #0A0D12; }
+}
+
+@layer components {
+  .glass {
+    background: var(--glass);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(18px) saturate(140%);
+    -webkit-backdrop-filter: blur(18px) saturate(140%);
+    @apply rounded-3xl shadow-card;
+  }
+  html:not(.dark) .glass { box-shadow: 0 10px 30px -14px rgba(14, 18, 24, 0.18); }
+  .text-gradient {
+    background-image: linear-gradient(100deg, #C6FF3D 0%, #7CFFB2 45%, #22E4FF 100%);
+    background-size: 200% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  /* Light theme: darker cyan text so it stays readable on white (dark theme unchanged). */
+  html:not(.dark) .text-cyan { color: #00728A; }
+  html:not(.dark) .text-\[\#FF6B4A\] { color: #C2410C; }
+  html:not(.dark) .text-gradient {
+    background-image: linear-gradient(100deg, #5E9400 0%, #0E9A63 45%, #0089AB 100%);
+  }
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 rounded-2xl px-6 py-3.5 font-display font-semibold text-[#0A0D12] transition-all duration-300 active:scale-[0.97];
+    background: linear-gradient(100deg, #C6FF3D, #7CFFB2 55%, #22E4FF);
+    box-shadow: 0 10px 30px -10px rgba(198, 255, 61, 0.7);
+  }
+  .btn-primary:hover { box-shadow: 0 14px 44px -8px rgba(198, 255, 61, 0.85); transform: translateY(-2px); }
+  .btn-primary:disabled { opacity: .45; cursor: not-allowed; transform: none; box-shadow: none; }
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-2 rounded-2xl px-5 py-3 font-medium transition-all duration-300 active:scale-[0.97];
+    border: 1px solid var(--glass-border);
+    background: var(--glass);
+  }
+  .btn-ghost:hover { border-color: rgba(198, 255, 61, 0.5); }
+  .chip { @apply inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold; }
+  .accent { color: var(--accent); }
+  .grid-bg {
+    background-image:
+      linear-gradient(var(--grid) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+    background-size: 48px 48px;
+    -webkit-mask-image: radial-gradient(ellipse at center, black 30%, transparent 75%);
+    mask-image: radial-gradient(ellipse at center, black 30%, transparent 75%);
+  }
+  .skeleton-sheen {
+    background: linear-gradient(100deg, transparent 20%, rgba(198, 255, 61, 0.07) 50%, transparent 80%);
+    background-size: 200% 100%;
+    animation: skeleton-sheen 1.6s ease-in-out infinite;
+  }
+  .input {
+    @apply w-full rounded-2xl px-4 py-3 outline-none transition placeholder:text-muted;
+    background: rgb(var(--ink) / 0.04);
+    border: 1px solid var(--glass-border);
+  }
+  .input:focus { border-color: rgba(198, 255, 61, 0.6); box-shadow: 0 0 0 4px rgba(198, 255, 61, 0.12); }
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+  .no-scrollbar { scrollbar-width: none; }
+}
+
+/* Dashboard streak flame: scale 1 -> 1.12 -> 1 with a -4deg/+4deg wobble, 1.6s, forever. */
+@keyframes flame-pulse {
+  0% { transform: scale(1) rotate(0deg); }
+  33.333% { transform: scale(1.095) rotate(-4deg); }
+  50% { transform: scale(1.12) rotate(0deg); }
+  66.667% { transform: scale(1.095) rotate(4deg); }
+  100% { transform: scale(1) rotate(0deg); }
+}
+.animate-flame { animation: flame-pulse 1.6s ease-in-out infinite; will-change: transform; }
+
+@keyframes skeleton-sheen { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
+.recharts-cartesian-grid line { stroke: var(--grid); }
+.recharts-text { fill: rgb(var(--muted)); font-size: 12px; }
+.recharts-surface:focus, .recharts-wrapper:focus { outline: none; }
